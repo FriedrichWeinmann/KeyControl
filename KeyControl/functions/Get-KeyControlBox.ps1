@@ -5,6 +5,6 @@
 		Assert-KeyControlConnection -Cmdlet $PSCmdlet
 	}
 	process {
-		Invoke-KeyControlRequest -Path ListBoxes
+		Invoke-KeyControlRequest -Path 'ListBoxes/'
 	}
 }

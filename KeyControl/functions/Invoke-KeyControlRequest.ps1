@@ -14,12 +14,20 @@
 		}
 	}
 	process {
-		$bodyJson = $Body
-		if ($Body -isnot [string]) { $bodyJson = ConvertTo-Json -InputObject $Body }
-
-		Invoke-RestMethod -Method POST -Uri "$($script:_KeyControlSession.BasePath.Trim('/\'))/$($Path.TrimStart('/\'))" -Body $bodyJson -Headers @{
-			'content-type' = 'application/json'
-			'x-vault-auth' = $script:_KeyControlSession.Token
+		$param = @{
+			Method = 'POST'
+			Uri = "$($script:_KeyControlSession.BasePath.Trim('/\'))/$($Path.TrimStart('/\'))"
+			Headers = @{
+				'content-type' = 'application/json'
+				'x-vault-auth' = $script:_KeyControlSession.Token
+			}
 		}
+		if ($Body) {
+			$bodyJson = $Body
+			if ($Body -isnot [string]) { $bodyJson = ConvertTo-Json -InputObject $Body }
+			$param.Body = $bodyJson
+		}
+
+		Invoke-RestMethod @param
 	}
 }
