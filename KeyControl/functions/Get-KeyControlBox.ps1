@@ -4,7 +4,7 @@
 		[string]
 		$Name = '*',
 
-		[tring]
+		[string]
 		$ID
 	)
 	begin {
