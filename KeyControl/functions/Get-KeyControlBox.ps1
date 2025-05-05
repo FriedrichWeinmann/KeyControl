@@ -5,14 +5,14 @@
 		$Name = '*',
 
 		[string]
-		$ID
+		$ID = '*'
 	)
 	begin {
 		Assert-KeyControlConnection -Cmdlet $PSCmdlet
 	}
 	process {
 		(Invoke-KeyControlRequest -Path 'ListBoxes/').boxes | Where-Object {
-			$_.Name -like $Name -and
+			$_.name -like $Name -and
 			$_.box_id -like $ID
 		}
 	}
