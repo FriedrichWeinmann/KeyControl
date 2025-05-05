@@ -6,13 +6,18 @@
 		$ComputerName,
 
 		[Parameter(Mandatory = $true)]
+		[string]
+		$Vault,
+
+		[Parameter(Mandatory = $true)]
 		[PSCredential]
 		$Credential
 	)
 	process {
-		$session = [PSCUstomObject]@{
+		$session = [PSCustomObject]@{
 			ComputerName = $ComputerName
 			Credential   = $Credential
+			Vault        = $Vault
 			Token        = ''
 			Expires      = (Get-Date).AddMinutes(30)
 			BasePath     = "https://$ComputerName/vault/1.0"
@@ -22,7 +27,7 @@
 			username = $Credential.UserName
 			password = $Credential.GetNetworkCredential().Password
 		}
-		$response = Invoke-RestMethod -Method POST -Uri "$($session.BasePath)/login/" -Body ($body | ConvertTo-Json) -ContentType 'application/json'
+		$response = Invoke-RestMethod -Method POST -Uri "$($session.BasePath)/Login/$Vault" -Body ($body | ConvertTo-Json) -ContentType 'application/json'
 
 		if ($response.result -eq 'success') {
 			$session.Token = $response.access_token

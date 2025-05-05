@@ -10,7 +10,7 @@
 		Assert-KeyControlConnection -Cmdlet $PSCmdlet
 
 		if ($script:_KeyControlSession.Expires -lt (Get-Date).AddMinutes(2)) {
-			Connect-KeyControl -ComputerName $script:_KeyControlSession.ComputerName -Credential $script:_KeyControlSession.Credential
+			Connect-KeyControl -ComputerName $script:_KeyControlSession.ComputerName -Credential $script:_KeyControlSession.Credential -Vault $script:_KeyControlSession.Vault
 		}
 	}
 	process {
