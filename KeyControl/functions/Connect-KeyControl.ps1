@@ -27,12 +27,15 @@
 			username = $Credential.UserName
 			password = $Credential.GetNetworkCredential().Password
 		}
-		$response = Invoke-RestMethod -Method POST -Uri "$($session.BasePath)/Login/$Vault" -Body ($body | ConvertTo-Json) -ContentType 'application/json'
+		$response = Invoke-RestMethod -Method POST -Uri "$($session.BasePath)/Login/$Vault/" -Body ($body | ConvertTo-Json) -ContentType 'application/json'
 
-		if ($response.result -eq 'success') {
+		if ($response.access_token) {
 			$session.Token = $response.access_token
 
 			$script:_KeyControlSession = $session
+		}
+		else {
+			throw "Failed to connect: $($response | ConvertTo-Json)"
 		}
 	}
 }
