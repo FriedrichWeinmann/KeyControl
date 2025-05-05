@@ -1,14 +1,16 @@
 ﻿function Connect-KeyControl {
 	[CmdletBinding()]
 	param (
+		[Parameter(Mandatory = $true)]
 		[string]
 		$ComputerName,
 
+		[Parameter(Mandatory = $true)]
 		[PSCredential]
 		$Credential
 	)
 	process {
-		$session = [PSCredential]@{
+		$session = [PSCUstomObject]@{
 			ComputerName = $ComputerName
 			Credential   = $Credential
 			Token        = ''
