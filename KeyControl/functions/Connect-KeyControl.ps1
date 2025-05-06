@@ -1,4 +1,28 @@
 ﻿function Connect-KeyControl {
+	<#
+	.SYNOPSIS
+		Connects to a entrust Key Control secrets Vault.
+	
+	.DESCRIPTION
+		Connects to a entrust Key Control secrets Vault.
+
+		This module assumes regular account authentication settings (local or ldap).
+	
+	.PARAMETER ComputerName
+		The computer hosting the vault.
+	
+	.PARAMETER Vault
+		The ID of the vault to connect to.
+	
+	.PARAMETER Credential
+		The credentials of the account used for authentication.
+	
+	.EXAMPLE
+		PS C:\> Connect-KeyControl -ComputerName vault.contoso.com -Credential $cred -Vault $vaultID
+	
+		Connects to the entrust Key Control secrets Vault hosted on "vault.contoso.com", using the credentials provided in $cred.
+		It specifically connects to the vault in $vaultID
+	#>
 	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true)]

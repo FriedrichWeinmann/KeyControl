@@ -66,6 +66,7 @@
 		'Connect-KeyControl'
 		'Disconnect-KeyControl'
 		'Get-KeyControlBox'
+		'Get-KeyControlSecret'
 		'Invoke-KeyControlRequest'
 	)
 
