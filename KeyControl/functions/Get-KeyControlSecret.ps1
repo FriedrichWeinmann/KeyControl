@@ -77,7 +77,11 @@
 				$body['version'] = $Version
 			}
 
-			Invoke-KeyControlRequest -Path 'CheckoutSecret/' -Body $body | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
+			$secretInfo = Invoke-KeyControlRequest -Path 'GetSecret/' -Body $body | ConvertFrom-Secret -BoxID $BoxID
+			$secret = Invoke-KeyControlRequest -Path 'CheckoutSecret/' -Body $body | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
+			if ($secret.secret_data -is [string]) { $secretInfo.Secret = $secret.secret_data | ConvertTo-SecureString -AsPlainText -Force }
+			else { $secretInfo.Secret = $secret.secret_data | ConvertTo-Json -Depth 99 | ConvertTo-SecureString -AsPlainText -Force }
+			$secretInfo
 			return
 		}
 
