@@ -11,7 +11,7 @@
 	.PARAMETER Name
 		The name to search by.
 	
-	.PARAMETER ID
+	.PARAMETER BoxID
 		The specific ID of the box to retrieve.
 	
 	.PARAMETER Filter
@@ -30,7 +30,7 @@
 		Lists all boxes in the connected vault whose name starts with "d12"
 
 	.EXAMPLE
-		PS C:\> Get-KeyControlBox -ID $boxID
+		PS C:\> Get-KeyControlBox -BoxID $boxID
 
 		Retrieves the specifically requested box.
 	#>
@@ -41,8 +41,9 @@
 		$Name = '*',
 
 		[Parameter(Mandatory = $true, ParameterSetName = 'ByID')]
+		[Alias('ID')]
 		[string]
-		$ID,
+		$BoxID,
 
 		[Parameter(Mandatory = $true, ParameterSetName = 'ByFilter')]
 		[string]
@@ -52,11 +53,11 @@
 		Assert-KeyControlConnection -Cmdlet $PSCmdlet
 	}
 	process {
-		if ($ID) {
+		if ($BoxID) {
 			$body = @{
-				'box_id' = $ID
+				'box_id' = $BoxID
 			}
-			Invoke-KeyControlRequest -Path 'GetBox/' -Body $body
+			Invoke-KeyControlRequest -Path 'GetBox/' -Body $body | ConvertFrom-Box
 			return
 		}
 
@@ -80,6 +81,6 @@
 			}
 			$param.Body = $body
 		}
-		(Invoke-KeyControlRequest @param).boxes
+		(Invoke-KeyControlRequest @param).boxes | ConvertFrom-Box
 	}
 }

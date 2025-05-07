@@ -42,11 +42,11 @@
 	#>
 	[CmdletBinding(DefaultParameterSetName = 'ByCondition')]
 	param (
-		[Parameter(Mandatory = $true)]
+		[Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
 		[string]
 		$BoxID,
 
-		[Parameter(Mandatory = $true, ParameterSetName = 'ByID')]
+		[Parameter(ParameterSetName = 'ByID', Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
 		[string]
 		$SecretID,
 
@@ -62,7 +62,8 @@
 		[string]
 		$Filter,
 
-		[Parameter(ParameterSetName = 'ByID')]
+		[Parameter(ParameterSetName = 'ByID', ValueFromPipelineByPropertyName = $true)]
+		[Alias('CurrentVersion')]
 		[string]
 		$Version
 	)
@@ -76,25 +77,12 @@
 				$body['version'] = $Version
 			}
 
-			Invoke-KeyControlRequest -Path 'GetSecret/' -Body $body | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
+			Invoke-KeyControlRequest -Path 'CheckoutSecret/' -Body $body | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
 			return
 		}
 
 		$body = @{
 			box_id = $BoxID
-			fields = @(
-				'secret_id'
-				'name'
-				'desc'
-				'revision'
-				'created_at'
-				'updated_at'
-				'expires_at'
-				'tags'
-				'version_count'
-				'current_version'
-				'secret_type'
-			)
 		}
 		$conditions = @()
 		if ($Name) {
@@ -118,6 +106,6 @@
 			Body = $body
 		}
 
-		(Invoke-KeyControlRequest @param).secrets | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
+		(Invoke-KeyControlRequest @param).secrets | ConvertFrom-Secret -BoxID $BoxID
 	}
 }
