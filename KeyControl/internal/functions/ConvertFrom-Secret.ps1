@@ -53,8 +53,8 @@
 			OwnerMail      = $InputObject.owner_email
 
 			Type           = $InputObject.secret_type.type
-			SubType        = $InputObject.secret_subtype_info # TODO: Figure out how to usefully merge the two types
-			Info           = $InputObject.secret_info # TODO: What is this?
+			SubType        = $InputObject.secret_subtype_info
+			Info           = $InputObject.secret_info
 
 			Secret         = $null
 

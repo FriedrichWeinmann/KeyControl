@@ -77,7 +77,7 @@
 		}
 		if ($Filter) {
 			$body = @{
-				$filters = $Filter
+				filters = $Filter
 			}
 			$param.Body = $body
 		}
