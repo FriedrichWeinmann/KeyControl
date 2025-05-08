@@ -61,6 +61,6 @@
 			$param.Body = $bodyJson
 		}
 
-		Invoke-RestMethod @param
+		Invoke-RestMethod @param -ErrorAction Stop
 	}
 }
