@@ -29,6 +29,10 @@
 	
 	.PARAMETER Version
 		The specific version of the secret to retrieve.
+
+	.PARAMETER NameProperty
+		The property on the info object to use for a credential name.
+		If Specified, this command will return a PSCredential object, with the value of that property as Username and the secret as password.
 	
 	.EXAMPLE
 		PS C:\> Get-KeyControlSecret -BoxID $boxID
@@ -39,6 +43,11 @@
 		PS C:\> Get-KeyControlSecret -BoxID $boxID SecretID $secret.secret_id
 
 		Retrieve the specified secret, including both metadata and the actual secret data.
+
+	.EXAMPLE
+		PS C:\> Get-KeyControlSecret -BoxID $boxID SecretID $secret.secret_id -NameProperty name
+
+		Retrieve the specified secret, returning a PSCredential object with the secret name as username and secret as password.
 	#>
 	[CmdletBinding(DefaultParameterSetName = 'ByCondition')]
 	param (
@@ -65,7 +74,11 @@
 		[Parameter(ParameterSetName = 'ByID', ValueFromPipelineByPropertyName = $true)]
 		[Alias('CurrentVersion')]
 		[string]
-		$Version
+		$Version,
+
+		[Parameter(ParameterSetName = 'ByID')]
+		[string]
+		$NameProperty
 	)
 	process {
 		if ($SecretID) {
@@ -81,7 +94,10 @@
 			$secret = Invoke-KeyControlRequest -Path 'CheckoutSecret/' -Body $body | Add-Member -MemberType NoteProperty -Name BoxID -Value $BoxID -PassThru
 			if ($secret.secret_data -is [string]) { $secretInfo.Secret = $secret.secret_data | ConvertTo-SecureString -AsPlainText -Force }
 			else { $secretInfo.Secret = $secret.secret_data | ConvertTo-Json -Depth 99 | ConvertTo-SecureString -AsPlainText -Force }
-			$secretInfo
+
+			if (-not $NameProperty) { return $secretInfo }
+			
+			[PSCredential]::new($secret.$NameProperty, $secret.Secret)
 			return
 		}
 
